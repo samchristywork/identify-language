@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Language Identification</title>
     <style>
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        }
+
+        #container {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
     </style>
   </head>
   <body>
@@ -16,5 +26,37 @@
       <div id="samples">
       </div>
     </div>
+    <script>
+      function randomChoice(arr, n) {
+        let result = [];
+        for (let i = 0; i < n; i++) {
+          let randomIndex = Math.floor(Math.random() * arr.length);
+          result.push(arr[randomIndex]);
+        }
+        return result;
+      }
+
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function loadRandomLanguage() {
+        selectedLanguage = randomChoice(Object.keys(languageList), 1)[0];
+        fetch(`languages/${selectedLanguage}.txt`)
+          .then(response => response.text())
+          .then(data => {
+            let samples = document.getElementById("samples")
+            for (const sample of shuffle(randomChoice(data.split('\n'), 20))) {
+              let s = document.createElement('div');
+              s.innerHTML = `${sample}`;
+              samples.appendChild(s);
+            }
+          })
+      }
+    </script>
   </body>
 </html>
