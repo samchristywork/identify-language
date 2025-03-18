@@ -27,6 +27,15 @@
       </div>
     </div>
     <script>
+      let params = new URLSearchParams(window.location.search);
+      let langs = params.get('langs');
+      let languageList = {}
+      let selectedLanguage = null;
+      let filename="all_languages.tsv";
+      if (langs == "common") {
+        filename="common_languages.tsv";
+      }
+
       function randomChoice(arr, n) {
         let result = [];
         for (let i = 0; i < n; i++) {
@@ -57,6 +66,32 @@
             }
           })
       }
+
+      fetch(filename)
+        .then(response => response.text())
+        .then(data => {
+          const lines = data.split('\n');
+          lines.forEach(line => {
+            if (line.trim() === '') return;
+            const parts = line.split('\t');
+            const code = parts[0].trim();
+            const name = parts[1].trim();
+            languageList[code] = name;
+          });
+
+          let choices = document.getElementById('choices');
+          let input = document.createElement('input');
+          choices.appendChild(input);
+          input.focus();
+
+          for (const code in languageList) {
+            let choice = document.createElement('div');
+            choice.innerHTML = `${code} - ${languageList[code]}`;
+            choices.appendChild(choice);
+          }
+
+          loadRandomLanguage();
+        })
     </script>
   </body>
 </html>
