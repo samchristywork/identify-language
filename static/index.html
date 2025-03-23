@@ -90,6 +90,35 @@
             choices.appendChild(choice);
           }
 
+          function refresh(event) {
+            let value = input.value.toLowerCase();
+            let choices = document.querySelectorAll('#choices div');
+            let firstVisibleChoice = null;
+
+            choices.forEach(choice => {
+              if (choice.innerHTML.toLowerCase().includes(value)) {
+                if (!firstVisibleChoice) {
+                  firstVisibleChoice = choice;
+                }
+                choice.style.display = 'block';
+              } else {
+                choice.style.display = 'none';
+              }
+            });
+
+            if (event.key === 'Enter' && firstVisibleChoice) {
+              firstVisibleChoice.click();
+              console.log(firstVisibleChoice.innerHTML);
+              if (selectedLanguage==firstVisibleChoice.innerHTML.split(' - ')[0]) {
+                console.log("Correct");
+              } else {
+                console.log("Incorrect");
+              }
+            }
+          }
+
+          input.addEventListener('keyup', refresh);
+
           loadRandomLanguage();
         })
     </script>
